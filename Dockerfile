@@ -1,22 +1,22 @@
-# Use an official OpenJDK runtime with Maven pre-installed
-FROM maven:3.8.6-openjdk-17 AS build
+# Use a working Maven image with OpenJDK 17
+FROM maven:3.9.6-eclipse-temurin-17 AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy project files to container
+# Copy project files
 COPY . .
 
 # Build the application
 RUN mvn clean package
 
-# Use a smaller image for running the app
-FROM openjdk:17-jdk-slim
+# Use a lightweight OpenJDK image for running the app
+FROM eclipse-temurin:17-jdk-jammy
 
 # Set working directory
 WORKDIR /app
 
-# Copy built JAR file from the build stage
+# Copy the built JAR file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
 # Expose the application port
